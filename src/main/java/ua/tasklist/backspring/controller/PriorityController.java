@@ -1,8 +1,11 @@
 package ua.tasklist.backspring.controller;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +15,8 @@ import ua.tasklist.backspring.entity.Priority;
 import ua.tasklist.backspring.repo.PriorityRepo;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * PriorityController.
@@ -59,5 +64,29 @@ public class PriorityController {
             return new ResponseEntity<>("missing parameter: color must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(this.priorityRepo.save(priority));
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        Priority priority = new Priority();
+        try {
+            Optional<Priority> tmp = this.priorityRepo.findById(id);
+            if (tmp.isPresent()) {
+                priority = tmp.get();
+            }
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(priority);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            this.priorityRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
