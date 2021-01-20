@@ -35,8 +35,8 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public List<Category> test() {
-        return this.categoryRepo.findAll();
+    public List<Category> findAll() {
+        return this.categoryRepo.findAllByOrderByTitleAsc();
     }
 
     @PostMapping("/add")
@@ -45,7 +45,7 @@ public class CategoryController {
             return new ResponseEntity<>("redundant parameter:ID must be null", HttpStatus.NOT_ACCEPTABLE);
         }
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: title must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(this.categoryRepo.save(category));
     }
@@ -53,10 +53,10 @@ public class CategoryController {
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody Category category) {
         if (category.getId() == null || category.getId() == 0) {
-            return new ResponseEntity<>("parameter:ID must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("parameter: ID must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: title must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(this.categoryRepo.save(category));
     }
@@ -70,7 +70,7 @@ public class CategoryController {
                 category = tmp.get();
             }
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(category);
     }
@@ -80,7 +80,7 @@ public class CategoryController {
         try {
             this.categoryRepo.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

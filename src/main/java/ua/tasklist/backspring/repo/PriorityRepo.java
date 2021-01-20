@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.tasklist.backspring.entity.Priority;
 
+import java.util.List;
+
 /**
  * PriorityRepo.
  *
@@ -13,4 +15,5 @@ import ua.tasklist.backspring.entity.Priority;
  */
 @Repository
 public interface PriorityRepo extends JpaRepository<Priority, Long> {
+    List<Priority> findAllByOrderByIdAsc();
 }

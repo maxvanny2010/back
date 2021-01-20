@@ -35,10 +35,8 @@ public class PriorityController {
     }
 
     @GetMapping("/all")
-    public List<Priority> test() {
-        final var all = this.priorityRepo.findAll();
-        System.out.println("list " + all);
-        return all;
+    public List<Priority> findAll() {
+        return this.priorityRepo.findAllByOrderByIdAsc();
     }
 
     @PostMapping("/add")
@@ -47,7 +45,7 @@ public class PriorityController {
             return new ResponseEntity<>("redundant parameter:ID must be null", HttpStatus.NOT_ACCEPTABLE);
         }
         if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: title must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(this.priorityRepo.save(priority));
     }
@@ -58,10 +56,10 @@ public class PriorityController {
             return new ResponseEntity<>("parameter:ID must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: title must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         if (priority.getColor() == null || priority.getColor().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: color must not be null", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("missing parameter: COLOR must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(this.priorityRepo.save(priority));
     }
@@ -75,7 +73,7 @@ public class PriorityController {
                 priority = tmp.get();
             }
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(priority);
     }
@@ -85,7 +83,7 @@ public class PriorityController {
         try {
             this.priorityRepo.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

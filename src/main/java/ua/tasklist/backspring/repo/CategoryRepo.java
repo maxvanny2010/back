@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.tasklist.backspring.entity.Category;
 
+import java.util.List;
+
 /**
  * CategoryRepo.
  *
@@ -13,4 +15,5 @@ import ua.tasklist.backspring.entity.Category;
  */
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Long> {
+    List<Category> findAllByOrderByTitleAsc();
 }
