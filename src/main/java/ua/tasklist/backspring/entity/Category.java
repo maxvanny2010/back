@@ -27,7 +27,6 @@ public class Category {
     private String title;
     private Long completedCount;
     private Long uncompletedCount;
-    private Collection<Task> tasksById;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -68,14 +67,5 @@ public class Category {
 
     public void setUncompletedCount(final Long uncompletedCount) {
         this.uncompletedCount = uncompletedCount;
-    }
-
-    @OneToMany(mappedBy = "categoryByCategoryId")
-    public Collection<Task> getTasksById() {
-        return tasksById;
-    }
-
-    public void setTasksById(final Collection<Task> tasksById) {
-        this.tasksById = tasksById;
     }
 }
