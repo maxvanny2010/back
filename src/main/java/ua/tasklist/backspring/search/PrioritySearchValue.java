@@ -1,5 +1,9 @@
 package ua.tasklist.backspring.search;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 
 /**
@@ -9,7 +13,10 @@ import lombok.Value;
  * @version 5.0
  * @since 21.01.2021
  */
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class PrioritySearchValue {
     String text;
 }
