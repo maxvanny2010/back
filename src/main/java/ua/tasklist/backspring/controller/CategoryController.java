@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tasklist.backspring.entity.Category;
 import ua.tasklist.backspring.repo.CategoryRepo;
+import ua.tasklist.backspring.search.CategorySearchValues;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -83,5 +84,11 @@ public class CategoryController {
             return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues) {
+        // if null to show all categories
+        return ResponseEntity.ok(this.categoryRepo.findByTitle(categorySearchValues.getText()));
     }
 }

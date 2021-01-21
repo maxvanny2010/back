@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tasklist.backspring.entity.Priority;
 import ua.tasklist.backspring.repo.PriorityRepo;
+import ua.tasklist.backspring.search.PrioritySearchValue;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -86,5 +87,10 @@ public class PriorityController {
             return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValue prioritySearchValue) {
+        return ResponseEntity.ok(this.priorityRepo.findByTitle(prioritySearchValue.getText()));
     }
 }
