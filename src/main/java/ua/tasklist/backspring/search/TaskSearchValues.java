@@ -17,8 +17,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskSearchValues {
-    String title;
-    Long priorityId;
-    Long categoryId;
-    Integer completed;
+    private String title;
+    private Long priorityId;
+    private Long categoryId;
+    private Integer completed;
+
+    private Integer pageNumber;
+    private Integer pageSize;
+
+    private String sortColumn;
+    private String sortDirection;
 }

@@ -17,5 +17,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PrioritySearchValue {
-    String text;
+    private String text;
 }

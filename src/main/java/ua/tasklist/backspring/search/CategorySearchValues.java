@@ -18,5 +18,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategorySearchValues {
-    String text;
+    private String text;
 }
