@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tasklist.backspring.entity.Stat;
-import ua.tasklist.backspring.repo.StatRepo;
+import ua.tasklist.backspring.services.StatService;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -19,10 +19,10 @@ import java.util.Optional;
  */
 @RestController
 public class StatController {
-    private final StatRepo statRepo;
+    private final StatService service;
 
-    public StatController(final StatRepo priorityRepo) {
-        this.statRepo = priorityRepo;
+    public StatController(final StatService service) {
+        this.service = service;
     }
 
     @GetMapping("/stat")
@@ -30,7 +30,7 @@ public class StatController {
         final Long defaultId = 1L;
         Stat stat = new Stat();
         try {
-            Optional<Stat> tmp = this.statRepo.findById(defaultId);
+            Optional<Stat> tmp = this.service.findById(defaultId);
             if (tmp.isPresent()) {
                 stat = tmp.get();
             }

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tasklist.backspring.entity.Category;
-import ua.tasklist.backspring.repo.CategoryRepo;
 import ua.tasklist.backspring.search.CategorySearchValues;
+import ua.tasklist.backspring.services.CategoryService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,15 +29,15 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
-    private final CategoryRepo categoryRepo;
+    private final CategoryService service;
 
-    public CategoryController(final CategoryRepo categoryRepo) {
-        this.categoryRepo = categoryRepo;
+    public CategoryController(final CategoryService service) {
+        this.service = service;
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Category>> findAll() {
-        return ResponseEntity.ok(this.categoryRepo.findAllByOrderByTitleAsc());
+        return ResponseEntity.ok(this.service.findAll());
     }
 
     @PostMapping("/add")
@@ -48,7 +48,7 @@ public class CategoryController {
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
             return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(this.categoryRepo.save(category));
+        return ResponseEntity.ok(this.service.add(category));
     }
 
     @PutMapping("/update")
@@ -59,7 +59,7 @@ public class CategoryController {
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
             return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        this.categoryRepo.save(category);
+        this.service.update(category);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -67,7 +67,7 @@ public class CategoryController {
     public ResponseEntity<?> findById(@PathVariable Long id) {
         Category category = new Category();
         try {
-            Optional<Category> tmp = this.categoryRepo.findById(id);
+            Optional<Category> tmp = this.service.findById(id);
             if (tmp.isPresent()) {
                 category = tmp.get();
             }
@@ -80,7 +80,7 @@ public class CategoryController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            this.categoryRepo.deleteById(id);
+            this.service.delete(id);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -90,6 +90,6 @@ public class CategoryController {
     @PostMapping("/search")
     public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues) {
         // if null to show all categories
-        return ResponseEntity.ok(this.categoryRepo.findByTitle(categorySearchValues.getText()));
+        return ResponseEntity.ok(this.service.search(categorySearchValues));
     }
 }
