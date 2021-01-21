@@ -36,8 +36,8 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public List<Category> findAll() {
-        return this.categoryRepo.findAllByOrderByTitleAsc();
+    public ResponseEntity<List<Category>> findAll() {
+        return ResponseEntity.ok(this.categoryRepo.findAllByOrderByTitleAsc());
     }
 
     @PostMapping("/add")
@@ -59,7 +59,8 @@ public class CategoryController {
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
             return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(this.categoryRepo.save(category));
+        this.categoryRepo.save(category);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")

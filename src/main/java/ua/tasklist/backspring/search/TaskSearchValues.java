@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * PrioritySearchValue.
+ * TaskSearchValues.
  *
  * @author legion
  * @version 5.0
@@ -16,6 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PrioritySearchValue {
-    String text;
+public class TaskSearchValues {
+    String title;
+    Long priorityId;
+    Long categoryId;
+    Integer completed;
 }

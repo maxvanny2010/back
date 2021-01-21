@@ -11,79 +11,76 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.tasklist.backspring.entity.Priority;
-import ua.tasklist.backspring.repo.PriorityRepo;
-import ua.tasklist.backspring.search.PrioritySearchValue;
+import ua.tasklist.backspring.entity.Task;
+import ua.tasklist.backspring.repo.TaskRepo;
+import ua.tasklist.backspring.search.TaskSearchValues;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * PriorityController.
+ * taskController.
  *
  * @author legion
  * @version 5.0
  * @since 20.01.2021
  */
 @RestController
-@RequestMapping("/priority")
-public class PriorityController {
-    private final PriorityRepo priorityRepo;
+@RequestMapping("/task")
+public class TaskController {
+    private final TaskRepo taskRepo;
 
-    public PriorityController(final PriorityRepo priorityRepo) {
-        this.priorityRepo = priorityRepo;
+    public TaskController(final TaskRepo taskRepo) {
+        this.taskRepo = taskRepo;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Priority>> findAll() {
-        return ResponseEntity.ok(this.priorityRepo.findAllByOrderByIdAsc());
+    public ResponseEntity<List<Task>> findAll() {
+        return ResponseEntity.ok(this.taskRepo.findAll());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody Priority priority) {
-        if (priority.getId() != null && priority.getId() != 0) {
+    public ResponseEntity<?> add(@RequestBody Task task) {
+        if (task.getId() != null && task.getId() != 0) {
             return new ResponseEntity<>("redundant parameter:ID must be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
+        if (task.getTitle() == null || task.getTitle().trim().length() == 0) {
             return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        return ResponseEntity.ok(this.priorityRepo.save(priority));
+        return ResponseEntity.ok(this.taskRepo.save(task));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Priority priority) {
-        if (priority.getId() == null || priority.getId() == 0) {
-            return new ResponseEntity<>("parameter:ID must not be null", HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<?> update(@RequestBody Task task) {
+        if (task.getId() == null || task.getId() == 0) {
+            return new ResponseEntity<>("parameter: ID must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        if (priority.getTitle() == null || priority.getTitle().trim().length() == 0) {
+        if (task.getTitle() == null || task.getTitle().trim().length() == 0) {
             return new ResponseEntity<>("missing parameter: TITLE must not be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        if (priority.getColor() == null || priority.getColor().trim().length() == 0) {
-            return new ResponseEntity<>("missing parameter: COLOR must not be null", HttpStatus.NOT_ACCEPTABLE);
-        }
-        this.priorityRepo.save(priority);
+        this.taskRepo.save(task);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        Priority priority = new Priority();
+        Task task = new Task();
         try {
-            Optional<Priority> tmp = this.priorityRepo.findById(id);
+            Optional<Task> tmp = this.taskRepo.findById(id);
             if (tmp.isPresent()) {
-                priority = tmp.get();
+                task = tmp.get();
             }
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(priority);
+        return ResponseEntity.ok(task);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            this.priorityRepo.deleteById(id);
+            this.taskRepo.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity<>("ID=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -91,7 +88,11 @@ public class PriorityController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValue prioritySearchValue) {
-        return ResponseEntity.ok(this.priorityRepo.findByTitle(prioritySearchValue.getText()));
+    public ResponseEntity<List<Task>> search(@RequestBody TaskSearchValues taskSearchValues) {
+        final var title = taskSearchValues.getTitle() != null ? taskSearchValues.getTitle() : null;
+        final var completed = taskSearchValues.getCompleted() != null ? taskSearchValues.getCompleted() : null;
+        final var priorityId = taskSearchValues.getPriorityId() != null ? taskSearchValues.getPriorityId() : null;
+        final var categoryId = taskSearchValues.getCategoryId() != null ? taskSearchValues.getCategoryId() : null;
+        return ResponseEntity.ok(this.taskRepo.findByParams(title, completed, priorityId, categoryId));
     }
 }
