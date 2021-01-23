@@ -47,6 +47,6 @@ public class CategoryService {
 
     public List<Category> search(final CategorySearchValues categorySearchValues) {
         // if null to show all categories
-        return this.categoryRepo.findByTitle(categorySearchValues.getText());
+        return this.categoryRepo.findByTitle(categorySearchValues.getTitle());
     }
 }

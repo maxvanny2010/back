@@ -27,4 +27,5 @@ public class TaskSearchValues {
 
     private String sortColumn;
     private String sortDirection;
+    //names must be the same names on frontend
 }

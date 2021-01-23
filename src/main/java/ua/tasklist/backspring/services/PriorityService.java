@@ -46,6 +46,6 @@ public class PriorityService {
     }
 
     public List<Priority> search(PrioritySearchValue prioritySearchValue) {
-        return this.priorityRepo.findByTitle(prioritySearchValue.getText());
+        return this.priorityRepo.findByTitle(prioritySearchValue.getTitle());
     }
 }
